@@ -8,15 +8,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-input/*
-output/*
-result/*
-done/*
-
-!input/.gitkeep
-!output/.gitkeep
-!result/.gitkeep
-!done/.gitkeep
 
 *.swp
 *.swo
