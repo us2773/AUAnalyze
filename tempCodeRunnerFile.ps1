@@ -77,7 +77,7 @@ if ($mp4Files.Count -eq 0) {
 foreach ($file in $mp4Files) {
     $src = $file.FullName
     $dest = "{0}:{1}" -f $ContainerID, $ContainerWorkDir
-    Write-Host "copying...: $($file.Name)"
+    Write-Host "コピー中: $($file.Name)"
     docker cp "$src" "$dest"
 }
 
