@@ -6,3 +6,6 @@ def get_OpenFace_result() :
     result = subprocess.run(ps_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("PowerShell stdout:", result.stdout)
     print("PowerShell stderr:", result.stderr)
+    
+if __name__ == "__main__":
+    get_OpenFace_result()
