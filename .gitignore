@@ -3,11 +3,13 @@
 env/
 ENV/
 
+# キャッシュ・ビルド生成物
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
+# 一時ファイル
 tempCodeRunnerFile.py
 
 *.swp
@@ -15,11 +17,14 @@ tempCodeRunnerFile.py
 *.bak
 *.tmp
 
+# 個人設定
 config.ps1
 db_config.py
 
+# OS依存の管理ファイル
 .DS_Store
 Thumbs.db
 desktop.ini
 
+# 動画ファイル
 *.mp4
