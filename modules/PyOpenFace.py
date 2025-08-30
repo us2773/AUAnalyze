@@ -1,6 +1,7 @@
 import subprocess
 import glob
 import os
+import shutil
 
 inputdir = "input"
 donedir = "done"
@@ -21,6 +22,16 @@ def get_OpenFace_result() :
     print("PowerShell stdout:", result.stdout)
     print("PowerShell stderr:", result.stderr)
     
+def transfer_input_movies():
+    # input ディレクトリ内の動画ファイルを done に移動
+    os.makedirs(donedir, exist_ok=True)
+
+    for filename in os.listdir(inputdir):
+        if filename.endswith(".mp4"): 
+            shutil.move(os.path.join(inputdir, filename),
+                        os.path.join(donedir, filename))
+    
 if __name__ == "__main__":
     get_movie_file()
-    #get_OpenFace_result()
+    get_OpenFace_result()
+    transfer_input_movies()
