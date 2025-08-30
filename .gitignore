@@ -8,6 +8,7 @@ __pycache__/
 *.pyo
 *.pyd
 
+tempCodeRunnerFile.py
 
 *.swp
 *.swo
