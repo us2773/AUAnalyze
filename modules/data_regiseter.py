@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from models import Base, main_table
+from models import Base, main_table, au_table
 import db_config
 
 def register() :
