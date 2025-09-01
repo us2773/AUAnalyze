@@ -19,53 +19,63 @@ def csv_to_dataframe(file_name) :
         raise RuntimeError(f"fail to load csv: {e}")
     
 # AUをノイズとトレンドに分離
-def AU_trend_noise(df: pd.DataFrame, plot_num: int):
+def AU_trend_noise(df: pd.DataFrame):
+    
+    lst_AUR_moving_mean = []
+    lst_AUR_moving_var = []
+    lst_AUR_residual_mean = []
+    lst_AUR_residual_var = []
+    
+    for plot_num in range(17) :
+        AUR_start = df.columns.get_loc(" AU01_r")
+        AUR_moving = df.iloc[:, AUR_start + plot_num]
+        AUR_name = df.columns[AUR_start + plot_num]
 
-    AUR_start = df.columns.get_loc(" AU01_r")
-    AUR_moving = df.iloc[:, AUR_start + plot_num]
-    AUR_name = df.columns[AUR_start + plot_num]
+        # LOWESSによるトレンド抽出
+        trend_est = lowess(AUR_moving, df[" timestamp"], frac=0.1, return_sorted=False)
 
-    # LOWESSによるトレンド抽出
-    trend_est = lowess(AUR_moving, df[" timestamp"], frac=0.1, return_sorted=False)
+        # 残差計算
+        residual = AUR_moving - trend_est
+        df[f"{AUR_name}_trend"] = trend_est
+        df[f"{AUR_name}_fluct"] = residual
 
-    # 残差計算
-    residual = AUR_moving - trend_est
-    df[f"{AUR_name}_trend"] = trend_est
-    df[f"{AUR_name}_fluct"] = residual
+        # 統計情報
+        AUR_moving_mean = float(AUR_moving.mean())
+        AUR_moving_var = float(AUR_moving.var())
+        AUR_residual_mean = float(residual.mean())
+        AUR_residual_var = float(residual.var())
+        
+        lst_AUR_moving_mean.append(AUR_moving_mean)
+        lst_AUR_moving_var.append(AUR_moving_var)
+        lst_AUR_residual_mean.append(AUR_residual_mean)
+        lst_AUR_residual_var.append(AUR_residual_var)
 
-    # 統計情報
-    AUR_moving_mean = AUR_moving.mean()
-    AUR_moving_var = AUR_moving.var()
-    res_mean = residual.mean()
-    res_var = residual.var()
-    print(f"{df.columns.values[AUR_start+plot_num]}")
-    print(f"AUR_moving mean: {AUR_moving_mean}")
-    print(f"AUR_moving var: {AUR_moving_var}")
-    print(f"residial mean: {res_mean}")
-    print(f"residual var: {res_var}")
-
-    result_dict = {"AU": df.columns.values[AUR_start+plot_num],"AUR_moving_mean": AUR_moving_mean, "AUR_moving_var": AUR_moving_var,"res_mean": res_mean, "res_var": res_var, }
+    result_dict = {"AUR_moving_mean": lst_AUR_moving_mean, "AUR_moving_var": lst_AUR_moving_var,"AUR_residual_mean": lst_AUR_residual_mean, "AUR_residual_var": lst_AUR_residual_var}
     print(result_dict)
-
-
     return result_dict
 
 # ピーク検出
-def get_AU_peak(df: pd.DataFrame, plot_num: int):
-    au_col = df.columns.get_loc(" AU01_r") + plot_num
-    signal = df.iloc[:, au_col].values
-    times = df[" timestamp"].values
-    AUR_start = df.columns.get_loc(" AU01_r")
+def get_AU_peak(df: pd.DataFrame):
+    lst_num = []
+    lst_f = []
+    for plot_num in range(17):
+        au_col = df.columns.get_loc(" AU01_r") + plot_num
+        signal = df.iloc[:, au_col].values
+        times = df[" timestamp"].values
 
-    peaks, _ = find_peaks(signal, height=0.1, distance=5, prominence=0.1)
+        peaks, _ = find_peaks(signal, height=0.1, distance=5, prominence=0.1)
 
-
-    num = len(peaks)
-    f = (times[-1] / num)
-    result_dict = {"AU": df.columns.values[AUR_start+plot_num],"num": num, "freq": f}
-    print(result_dict)
-    print(times[-1])
-
+        num = len(peaks)
+        print(num)
+        if num == 0 :
+            f = 0
+        else :
+            f = float(times[-1] / num)
+        
+        lst_num.append(num)
+        lst_f.append(f)
+        
+    result_dict = {"num": lst_num, "freq": lst_f}
     return result_dict
 
 if __name__ == "__main__" :
@@ -76,5 +86,5 @@ if __name__ == "__main__" :
         df = csv_to_dataframe(outputs[i])
         list.append(df)
     print(len(list))
-    AU_trend_noise(list[0], 0)
-    get_AU_peak(list[0], 16)
+    AU_trend_noise(list[0])
+    get_AU_peak(list[0])
