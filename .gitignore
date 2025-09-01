@@ -11,6 +11,7 @@ __pycache__/
 
 # 一時ファイル
 tempCodeRunnerFile.py
+tempCodeRunnerFile.ps1
 
 *.swp
 *.swo

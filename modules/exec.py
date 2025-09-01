@@ -13,7 +13,7 @@ input_movies = get_movie_file()
 print(input_movies)
 
 # movie to CSV
-# get_OpenFace_result()
+get_OpenFace_result()
 #transfer_input_movies() # デバッグ時はコメントアウト
 
 data_regiseter.register(input_movies)
