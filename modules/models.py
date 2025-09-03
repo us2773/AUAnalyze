@@ -18,7 +18,7 @@ class main_table(Base) :
 class au_table(Base) :
     __tablename__ = "AU_table"
     indiv_id = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
-    data_id = mapped_column(ForeignKey("main_table.id"), nullable=False)
+    data_id = mapped_column(ForeignKey("main_table.id"), unique=True,nullable=False)
     trend_mean = mapped_column(ARRAY(Float))
     trend_var = mapped_column(ARRAY(Float))
     noise_mean = mapped_column(ARRAY(Float))
