@@ -6,6 +6,7 @@ import db_config
 
 def register(movie_list: list) :
     # Engine作成
+    # mainに移動？
     engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
     # Table 作成
     Base.metadata.create_all(engine)
