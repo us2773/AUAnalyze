@@ -36,9 +36,11 @@ class analyze_tools(Cmd) :
         try: 
             arg_dict = parser_args.perse_args(arg)
             data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
+            is_all = "all" in arg_dict
+            print(is_all)
             for i in data:
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
-                get_AUdata.show_trend_noise_graph(df, int(arg_dict["au"])-1)
+                get_AUdata.show_trend_noise_graph(df, int(arg_dict["au"]), is_all)
                 
         except Exception as e:
             print("ERROR:", e)
@@ -46,10 +48,11 @@ class analyze_tools(Cmd) :
     def do_peaks(self, arg) :
         try: 
             arg_dict = parser_args.perse_args(arg)
+            is_all = "all" in arg_dict
             data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
             for i in data:
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
-                get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"])-1)
+                get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"]), is_all)
                 
         except Exception as e:
             print("ERROR:", e)

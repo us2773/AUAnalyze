@@ -3,6 +3,7 @@ import pandas as pd
 from statsmodels.nonparametric.smoothers_lowess import lowess
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
+from modules import au_map
 
 outputdir = "output"
 outputs = glob.glob(outputdir+"/*")
@@ -65,23 +66,39 @@ def separate_AU_trend_noise(df, plot_num) :
     df[f"{AUR_name}_fluct"] = residual
     return (trend_est, residual)
 
-def show_trend_noise_graph(df, plot_num) :
+def show_trend_noise_graph(df, au_num, all: bool) :
+    plot_num = au_map.au_map_int.index(au_num) # AU番号で入力を受けつけインデックス番号に変換
+    
     AUR_start = df.columns.get_loc(" AU01_r")
     AUR_row = df.iloc[:, AUR_start + plot_num]
-    AUR_name = df.columns[AUR_start + plot_num]
+    AUR_name = au_map.AU_describe_list[plot_num] 
     
-    trend_est, residual = separate_AU_trend_noise(df, plot_num)
+    
+    fig, ax = plt.subplots(figsize=(12, 10))
+    
     # グラフ描画
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(df[" timestamp"], AUR_row, label="Original", color = "gray")
-    ax.plot(df[" timestamp"], trend_est, label="Trend (LOWESS)", color="blue")
-    ax.plot(df[" timestamp"], residual, label="Residual (Fluctuation)", color="red", linestyle="--")
-    ax.legend()
-    ax.set_xlabel("Time [s]")
-    ax.set_ylabel(AUR_name)
-    ax.set_title(f"{AUR_name}: Trend and Fluctuation")
-    fig.tight_layout()
-    plt.show()
+    if all :
+        axes = fig.subplots(5, 4)
+        for i in range(17) :
+            trend_est, residual = separate_AU_trend_noise(df, i)
+            axes[i//4][i%4].plot(df[" timestamp"], df.iloc[:, AUR_start + i], label="Original", color = "gray")
+            axes[i//4][i%4].plot(df[" timestamp"], trend_est, label="Trend (LOWESS)", color="blue")
+            axes[i//4][i%4].plot(df[" timestamp"], residual, label="Residual (Fluctuation)", color="red", linestyle="--")
+            axes[i//4][i%4].set_title(au_map.AU_describe_list[i])
+            plt.tight_layout(pad=1.5,w_pad=0.5,h_pad=1.0)  
+            fig.subplots_adjust(hspace=0.5, wspace=0.5)
+        plt.show()
+    else:
+        trend_est, residual = separate_AU_trend_noise(df, plot_num)
+        ax.plot(df[" timestamp"], AUR_row, label="Original", color = "gray")
+        ax.plot(df[" timestamp"], trend_est, label="Trend (LOWESS)", color="blue")
+        ax.plot(df[" timestamp"], residual, label="Residual (Fluctuation)", color="red", linestyle="--")
+        ax.legend()
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel(AUR_name)
+        ax.set_title(f"{AUR_name}: Trend and Fluctuation")
+        fig.tight_layout()
+        plt.show(layout="tight")
     
     return fig
 
@@ -114,22 +131,38 @@ def find_AU_peaks(df, plot_num) :
     peaks, _ = find_peaks(signal, height=0.1, distance=5, prominence=0.1)
     return peaks, times
 
-def show_AU_peak_graph(df, plot_num) :
-    peaks, times = find_AU_peaks(df, plot_num)
+def show_AU_peak_graph(df, au_num, all: bool) :
+    plot_num = au_map.au_map_int.index(au_num) # AU番号で入力を受けつけインデックス番号に変換
+    
     au_col = df.columns.get_loc(" AU01_r") + plot_num
     signal = df.iloc[:, au_col].values
     
     fig, ax = plt.subplots(figsize=(12, 8))
-    
-    ax.plot(times, signal, label="Original")
-    ax.scatter(times[peaks], signal[peaks], color='red', label='Expression Peaks')
-    ax.set_title(f"{df.columns[au_col]}: transition")
-    ax.set_xlabel("Timestamp (s)")
-    ax.set_ylabel("AU Strength")
-    ax.grid(True)
-    ax.legend()
-    fig.tight_layout()
-    plt.show()
+    if all :
+        axes = fig.subplots(5, 4)
+        for i in range(17) :
+            peaks, times = find_AU_peaks(df, i)
+            au_col = df.columns.get_loc(" AU01_r") + i
+            signal = df.iloc[:, au_col].values
+            axes[i//4][i%4].plot(df[" timestamp"], signal, label="Original", color = "gray")
+            axes[i//4][i%4].scatter(times[peaks], signal[peaks], color='red', label='Expression Peaks')
+            axes[i//4][i%4].set_title(au_map.AU_describe_list[i])
+            fig.subplots_adjust(hspace=0.5, wspace=0.5)
+        plt.show()
+    else:
+        peaks, times = find_AU_peaks(df, plot_num)
+        au_col = df.columns.get_loc(" AU01_r") + plot_num
+        signal = df.iloc[:, au_col].values
+            
+        ax.plot(times, signal, label="Original", color="gray")
+        ax.scatter(times[peaks], signal[peaks], color='red', label='Expression Peaks')
+        ax.set_title(f"{au_map.AU_describe_list[plot_num]}: transition")
+        ax.set_xlabel("Timestamp (s)")
+        ax.set_ylabel("AU Strength")
+        ax.grid(True)
+        ax.legend()
+        fig.tight_layout()
+        plt.show()
     
     return fig
 
