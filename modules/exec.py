@@ -31,7 +31,7 @@ with Session(engine) as session:
         csv_file = f"{outputdir}/{movie_name}.csv"
         df = csv_to_dataframe(csv_file)
         
-        result_trend_noise = AU_trend_noise(df)
+        result_trend_noise = get_trend_noise(df)
         result_peak = get_AU_peak(df)
         
         # AU_table登録

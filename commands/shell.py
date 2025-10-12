@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats
+from modules import stats, get_AUdata
 from commands import parser_args
 
 class analyze_tools(Cmd) :
@@ -19,7 +19,10 @@ class analyze_tools(Cmd) :
         return super().do_help(arg)
     
     def do_AUAnalyze(self) :
-        exec()
+        try :
+            exec()
+        except Exception as e:
+            print("Error:", e)
     
     def do_stats(self, arg) :
         try:
@@ -28,5 +31,28 @@ class analyze_tools(Cmd) :
             stats.get_stats(arg_dict["person"], arg_dict["date"], int(arg_dict["num"]), int(arg_dict["au"]))
         except Exception as e:
             print("ERROR:", e)
+            
+    def do_trend(self, arg) :
+        try: 
+            arg_dict = parser_args.perse_args(arg)
+            data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
+            for i in data:
+                df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
+                get_AUdata.show_trend_noise_graph(df, int(arg_dict["au"])-1)
+                
+        except Exception as e:
+            print("ERROR:", e)
+            
+    def do_peaks(self, arg) :
+        try: 
+            arg_dict = parser_args.perse_args(arg)
+            data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
+            for i in data:
+                df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
+                get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"])-1)
+                
+        except Exception as e:
+            print("ERROR:", e)
+
 if __name__ == "__main__": 
     analyze_tools().cmdloop()
