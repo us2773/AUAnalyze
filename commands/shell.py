@@ -1,5 +1,11 @@
+import sys
+import os
+
+# ルートディレクトリ（AUAnalyze）をsys.pathに追加
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from cmd import Cmd
-from modules import *
+from modules import stats
 from commands import parser_args
 
 class analyze_tools(Cmd) :
@@ -16,5 +22,11 @@ class analyze_tools(Cmd) :
         exec()
     
     def do_stats(self, arg) :
-        arg_dict = parser_args.perse_args(arg)
-        
+        try:
+            arg_dict = parser_args.perse_args(arg)
+            print("DEBUG arg_dict:", arg_dict)
+            stats.get_stats(arg_dict["person"], arg_dict["date"], int(arg_dict["num"]), int(arg_dict["au"]))
+        except Exception as e:
+            print("ERROR:", e)
+if __name__ == "__main__": 
+    analyze_tools().cmdloop()

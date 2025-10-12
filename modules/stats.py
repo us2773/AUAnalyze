@@ -1,11 +1,15 @@
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # modules の親を追加
+
+from modules.models import Base, main_table, au_table
+from modules import db_config
+from modules import au_map
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import between
-from models import Base, main_table, au_table
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import db_config
-import au_map
+
 
 engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
 
