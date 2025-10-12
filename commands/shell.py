@@ -53,6 +53,12 @@ class analyze_tools(Cmd) :
                 
         except Exception as e:
             print("ERROR:", e)
+            
+    def do_EOF(self, arg):
+        return True
+    
+    def emptyline(self):
+        return super().emptyline()
 
 if __name__ == "__main__": 
     analyze_tools().cmdloop()
