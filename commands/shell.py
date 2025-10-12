@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats, get_AUdata
+from modules import stats, get_AUdata, exec
 from commands import parser_args
 
 class analyze_tools(Cmd) :
@@ -18,9 +18,9 @@ class analyze_tools(Cmd) :
     def do_help(self, arg):
         return super().do_help(arg)
     
-    def do_AUAnalyze(self) :
+    def do_AUAnalyze(self, arg) :
         try :
-            exec()
+            exec.exec()
         except Exception as e:
             print("Error:", e)
     
