@@ -8,7 +8,7 @@ import db_config
 
 engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
 
-def get_stats(person: str, date: str, num: int) :
+def get_stats(person: str, date: str, num: int, au: int) :
     format = "%Y%m%d-%H:%M:%S"
     start_time = datetime.strptime(date + "-00:00:00", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
     end_time = datetime.strptime(date + "-23:59:59", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
@@ -21,13 +21,34 @@ def get_stats(person: str, date: str, num: int) :
         if num == 0:
             # 全データ
             for i in range(len(data)) :
-                print(data[i].person)
-                print(data[i].id)
-                print(data[i].date)
-        
+                print(type(data[i].id))
+                au_data = query_au_table(data[i].id)
+                print(f"{data[i].person}/{data[i].date}/{num}")
+                if au == 0 :
+                    for i in range(17) :
+                        show_stats(au_data, i)
+                else :
+                    show_stats(au_data, au)
+                
         else :
             print(data[num-1].person)
             print(data[num-1].id)
+            
+def query_au_table(id) :
+    with Session(engine) as session :
+        stmt = select(au_table).where(au_table.data_id == id)
+        data = session.scalars(stmt).first()
+        return data
+    
+def show_stats(au_data: au_table, au: int) :
+    print(f"AUR moving mean = {au_data.trend_mean[au]}")
+    print(f"AUR moving var = {au_data.trend_mean[au]}")
+    print(f"AUR residual mean = {au_data.trend_mean[au]}")
+    print(f"AUR residual var = {au_data.trend_mean[au]}")
+    print(f"num of peak = {au_data.trend_mean[au]}")
+    print(f"peak freqency = {au_data.trend_mean[au]}")
+    print()
+
 
 if __name__ == "__main__" :
-    get_stats("guest", "20250901",0)
+    get_stats("guest", "20250901",0, 0)
