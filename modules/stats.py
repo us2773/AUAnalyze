@@ -5,16 +5,17 @@ from models import Base, main_table, au_table
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import db_config
+import au_map
 
 engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
 
 def get_stats(person: str, date: str, num: int, au: int) :
+    # 日付は範囲指定
     format = "%Y%m%d-%H:%M:%S"
     start_time = datetime.strptime(date + "-00:00:00", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
     end_time = datetime.strptime(date + "-23:59:59", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
     print(start_time)
     with Session(engine) as session: 
-        # 日付は範囲指定
         stmt = select(main_table).where(main_table.person==person).filter(between(main_table.date, start_time, end_time))
         data = session.scalars(stmt).all()
         
@@ -33,6 +34,11 @@ def get_stats(person: str, date: str, num: int, au: int) :
         else :
             print(data[num-1].person)
             print(data[num-1].id)
+            if au == 0 :
+                    for i in range(17) :
+                        show_stats(au_data, i)
+            else :
+                show_stats(au_data, au)
             
 def query_au_table(id) :
     with Session(engine) as session :
@@ -41,6 +47,7 @@ def query_au_table(id) :
         return data
     
 def show_stats(au_data: au_table, au: int) :
+    print(f"{au_map.au_map[au]}")
     print(f"AUR moving mean = {au_data.trend_mean[au]}")
     print(f"AUR moving var = {au_data.trend_mean[au]}")
     print(f"AUR residual mean = {au_data.trend_mean[au]}")
