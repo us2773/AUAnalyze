@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats, get_AUdata, exec
+from modules import stats, get_AUdata, exec, PyOpenFace
 from commands import parser_args
 
 class analyze_tools(Cmd) :
@@ -54,6 +54,12 @@ class analyze_tools(Cmd) :
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
                 get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"]), is_all)
                 
+        except Exception as e:
+            print("ERROR:", e)
+            
+    def do_move(self, arg) :
+        try :
+            PyOpenFace.transfer_input_movies()
         except Exception as e:
             print("ERROR:", e)
             

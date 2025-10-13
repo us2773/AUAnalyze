@@ -7,7 +7,7 @@ from modules import au_map
 
 outputdir = "output"
 outputs = glob.glob(outputdir+"/*")
-print(outputs)
+# print(outputs)
 
 # CSVをクレンジングしDataFrameを取得
 # 直近で動画→CSV処理をした動画のみ行うように後で変更
