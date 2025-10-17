@@ -1,4 +1,5 @@
 **20251017 基本操作をコマンドで実行する機能を実装しました。AU取得、統計情報の表示、分析グラフの表示などは全てshell.py実行後に表示されるプロンプトにコマンドを入力して実行できます。**
+
 **20250906　データベースの構成を変更しました。一度main_table及びAU_tableを削除して、再度実行してください**
 
 # 導入手順
@@ -36,7 +37,7 @@ config.ps1はOpenFaceセットアップ後に、db_config.pyはSQL導入後に�
 
 ### Docker Desktopの導入
 
-https://www.docker.com/ja-jp/products/docker-desktop/からDockerDesktopをインストールする。
+https://www.docker.com/ja-jp/products/docker-desktop/からDockerDesktop をインストールする。
 
 次にDockerでopenfaceをインストールする。Powershellで以下のコマンドを実行
 
@@ -53,7 +54,7 @@ $ContainerID = "your_openface_docker_container_id"
 
 ## SQL導入
 
-1. 下記のサイトからPostgreSQLのインストーラをダウンロードする。https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+1. 下記のサイトからPostgreSQLのインストーラをダウンロードする。 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 2. 手順に沿ってインストールする。
     1. 基本的に選択肢はデフォルトのまま
     2. 終了後に起動するStackBuildeは閉じてよい（最後のページのチェックを外せば起動しない）
