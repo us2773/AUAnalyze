@@ -2,16 +2,12 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # modules の親を追加
 
 from modules.models import Base, main_table, au_table
-from modules import db_config
-from modules import au_map
-from sqlalchemy import create_engine, select
+from modules import  au_map, db_engine
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import between
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
-
-engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
 
 def get_data_from_property(person: str, date: str) :
     # 日付は範囲指定
@@ -19,7 +15,7 @@ def get_data_from_property(person: str, date: str) :
     start_time = datetime.strptime(date + "-00:00:00", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
     end_time = datetime.strptime(date + "-23:59:59", format).replace(tzinfo=ZoneInfo("Asia/Tokyo"))
     print(start_time)
-    with Session(engine) as session: 
+    with Session(db_engine.engine) as session: 
         stmt = select(main_table).where(main_table.person==person).filter(between(main_table.date, start_time, end_time))
         return session.scalars(stmt).all()
 
@@ -49,7 +45,7 @@ def get_stats(person: str, date: str, num: int, au: int) :
             show_stats(au_data, au)
             
 def query_au_table(id) :
-    with Session(engine) as session :
+    with Session(db_engine.engine) as session :
         stmt = select(au_table).where(au_table.data_id == id)
         data = session.scalars(stmt).first()
         return data

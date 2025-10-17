@@ -1,21 +1,20 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # modules の親を追加
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from modules.models import Base, main_table, au_table
+from modules.models import Base, main_table
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from modules import db_config
+from modules import db_engine
 
 def register(movie_list: list) :
     # Engine作成
     # mainに移動？
-    engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
     # Table 作成
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(db_engine.engine)
     
-    with Session(engine) as session:
+    with Session(db_engine.engine) as session:
         for i in range(len(movie_list)) :
             movie_name = movie_list[i]
             # メタデータ登録
