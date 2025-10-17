@@ -1,7 +1,7 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # modules の親を追加
 
-from modules import PyOpenFace, get_AUdata, data_regiseter, db_config
+from modules import PyOpenFace, get_AUdata, data_regiseter, db_engine
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from modules.models import Base, main_table, au_table
@@ -19,10 +19,8 @@ def exec() :
 
     data_regiseter.register(input_movies)
 
-    # Engine作成
-    engine = create_engine(f"postgresql+psycopg2://{db_config.user_name}:{db_config.password}@{db_config.host_name}/facehealthdb",echo=True)
 
-    with Session(engine) as session:
+    with Session(db_engine.engineengine) as session:
         for movie_name in input_movies :
             stmt = select(main_table).where(main_table.movie_name == movie_name)
             main_data = session.scalars(stmt).one()
