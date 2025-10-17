@@ -37,6 +37,8 @@ class analyze_tools(Cmd) :
             arg_dict = parser_args.perse_args(arg)
             data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
             is_all = "all" in arg_dict
+            if is_all :
+                arg_dict["au"] = 1
             print(is_all)
             for i in data:
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
@@ -46,12 +48,19 @@ class analyze_tools(Cmd) :
             print("ERROR:", e)
             
     def do_peaks(self, arg) :
+        print("call do_peaks")
         try: 
             arg_dict = parser_args.perse_args(arg)
             is_all = "all" in arg_dict
+            if is_all :
+                arg_dict["au"] = 1
+            print("call stats.get_data_from_property")
             data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
             for i in data:
+                # 取得した全レコードの結果を表示
+                print("call get_AUdata.csv_to_dataframe")
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
+                print("call get_AUdata.show_AU_peak_graph")
                 get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"]), is_all)
                 
         except Exception as e:
