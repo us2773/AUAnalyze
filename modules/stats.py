@@ -21,7 +21,8 @@ def get_data_from_property(person: str, date: str) :
 
 def get_stats(person: str, date: str, num: int, au: int) :
     # 日付は範囲指定
-    data = get_data_from_property(person, date, num, au)
+    data = get_data_from_property(person, date)
+    print(data)
         
     if num == 0:
         # 全データ
@@ -53,11 +54,11 @@ def query_au_table(id) :
 def show_stats(au_data: au_table, au: int) :
     print(f"{au_map.au_map[au]}")
     print(f"AUR moving mean = {au_data.trend_mean[au]}")
-    print(f"AUR moving var = {au_data.trend_mean[au]}")
-    print(f"AUR residual mean = {au_data.trend_mean[au]}")
-    print(f"AUR residual var = {au_data.trend_mean[au]}")
-    print(f"num of peak = {au_data.trend_mean[au]}")
-    print(f"peak freqency = {au_data.trend_mean[au]}")
+    print(f"AUR moving var = {au_data.trend_var[au]}")
+    print(f"AUR residual mean = {au_data.noise_mean[au]}")
+    print(f"AUR residual var = {au_data.noise_var[au]}")
+    print(f"num of peak = {au_data.num_of_peak[au]}")
+    print(f"peak freqency = {au_data.peak_freq[au]}")
     print()
 
 

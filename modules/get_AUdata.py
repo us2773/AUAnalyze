@@ -68,11 +68,11 @@ def separate_AU_trend_noise(df, plot_num) :
 
 def show_trend_noise_graph(df, au_num, all: bool) :
     plot_num = au_map.au_map_int.index(au_num) # AU番号で入力を受けつけインデックス番号に変換
+    print(f"plot_num: {plot_num}")
     
     AUR_start = df.columns.get_loc(" AU01_r")
     AUR_row = df.iloc[:, AUR_start + plot_num]
     AUR_name = au_map.AU_describe_list[plot_num] 
-    
     
     fig, ax = plt.subplots(figsize=(12, 10))
     
@@ -87,6 +87,7 @@ def show_trend_noise_graph(df, au_num, all: bool) :
             axes[i//4][i%4].set_title(au_map.AU_describe_list[i])
             plt.tight_layout(pad=1.5,w_pad=0.5,h_pad=1.0)  
             fig.subplots_adjust(hspace=0.5, wspace=0.5)
+            axes[i//4][i%4].set_ylim(0, 5)
         plt.show()
     else:
         trend_est, residual = separate_AU_trend_noise(df, plot_num)
@@ -98,7 +99,8 @@ def show_trend_noise_graph(df, au_num, all: bool) :
         ax.set_ylabel(AUR_name)
         ax.set_title(f"{AUR_name}: Trend and Fluctuation")
         fig.tight_layout()
-        plt.show(layout="tight")
+        plt.ylim(0, 5)
+        plt.show()
     
     return fig
 
@@ -147,6 +149,7 @@ def show_AU_peak_graph(df, au_num, all: bool) :
             axes[i//4][i%4].plot(df[" timestamp"], signal, label="Original", color = "gray")
             axes[i//4][i%4].scatter(times[peaks], signal[peaks], color='red', label='Expression Peaks')
             axes[i//4][i%4].set_title(au_map.AU_describe_list[i])
+            axes[i//4][i%4].set_ylim(0, 5)
             fig.subplots_adjust(hspace=0.5, wspace=0.5)
         plt.show()
     else:
@@ -162,6 +165,7 @@ def show_AU_peak_graph(df, au_num, all: bool) :
         ax.grid(True)
         ax.legend()
         fig.tight_layout()
+        plt.ylim(0, 5)
         plt.show()
     
     return fig
