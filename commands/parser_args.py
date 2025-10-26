@@ -8,6 +8,10 @@ def perse_args(line: str) -> dict :
             if "=" in token :
                 key, value = token[1:].split("=", 1)
                 args_dict[key] = value
+                if "," in value :
+                    args_dict[key] = [v.strip() for v in value.split(",") if v.strip()]
+                else :
+                    args_dict[key] = value.strip()
             else :
                 args_dict[token[1:]] = True
         else:

@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats, get_AUdata, PyOpenFace, data_regiseter, db_engine
+from modules import stats, get_AUdata, PyOpenFace, data_regiseter, db_engine, create_dataset
 from commands import parser_args
 from modules.models import Base
 
@@ -77,7 +77,11 @@ class analyze_tools(Cmd) :
                 
         except Exception as e:
             print("ERROR:", e)
-            
+                    
+    def do_dataset(self, arg) :
+        arg_dict = parser_args.perse_args(arg)
+        create_dataset.create_dataset(arg_dict["s"], arg_dict["e"], arg_dict["person"])
+        
     def do_move(self, arg) :
         try :
             PyOpenFace.transfer_input_movies()
