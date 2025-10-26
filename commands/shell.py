@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats, get_AUdata, exec, PyOpenFace
+from modules import stats, get_AUdata, PyOpenFace, data_regiseter
 from commands import parser_args
 
 class analyze_tools(Cmd) :
@@ -20,7 +20,16 @@ class analyze_tools(Cmd) :
     
     def do_AUAnalyze(self, arg) :
         try :
-            exec.exec()
+            all_data = data_regiseter.get_collected_data_list()
+    
+            # movie to CSV
+            PyOpenFace.get_OpenFace_result()
+
+            # main_table登録
+            data_regiseter.register(all_data)
+
+            # AU_table登録
+            data_regiseter.au_register(all_data)
         except Exception as e:
             print("Error:", e)
     

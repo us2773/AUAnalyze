@@ -5,6 +5,10 @@ import shutil
 
 inputdir = "input"
 donedir = "done"
+done_json_dir = f"{donedir}/json"
+done_movie_dir = f"{donedir}/movie"
+jsondir = "json"
+
 def get_movie_file():
     # inputディレクトリの動画ファイルのリストを返す
     inputs = glob.glob(inputdir+"/*")
@@ -25,11 +29,18 @@ def get_OpenFace_result() :
 def transfer_input_movies():
     # input ディレクトリ内の動画ファイルを done に移動
     os.makedirs(donedir, exist_ok=True)
+    os.makedirs(done_json_dir, exist_ok=True)
+    os.makedirs(done_movie_dir, exist_ok=True)
 
     for filename in os.listdir(inputdir):
         if filename.endswith(".mp4"): 
             shutil.move(os.path.join(inputdir, filename),
-                        os.path.join(donedir, filename))
+                        os.path.join(done_movie_dir, filename))
+    
+    for filename in os.listdir(jsondir) :
+        if filename.endswith(".json") :
+            shutil.move(os.path.join(jsondir, filename), 
+                        os.path.join(done_json_dir, filename))
     
 if __name__ == "__main__":
     get_movie_file()

@@ -11,7 +11,7 @@ class main_table(Base) :
     id = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     movie_name = mapped_column(Text, unique=True)
     date = mapped_column(DateTime(timezone=True))
-    # fatigue_level = mapped_column(ARRAY(Float))
+    fatigue_level = mapped_column(ARRAY(Integer))
     registed_date = mapped_column(DateTime)
     person = mapped_column(Text)
     
