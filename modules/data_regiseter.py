@@ -16,11 +16,8 @@ jsondir = "json"
 
 def register(all_data: list) :
     # collected_data型格納リスト
-    # Table 作成
-    Base.metadata.create_all(db_engine.engine)
     
     with Session(db_engine.engine) as session:
-        print(len(all_data))
         for data in all_data :
             print(data.get_movie_name())
             movie_name = data.get_movie_name()
@@ -51,7 +48,6 @@ def register(all_data: list) :
 def json_analyze() :
     # JSONファイルをすべて取得
     jsons = glob.glob(jsondir+"/*.json")
-    print(jsons)
     
     all_data = []
     

@@ -16,7 +16,6 @@ def get_movie_file():
     for movie_path in inputs :
         movie_name = os.path.splitext(os.path.basename(movie_path))[0]
         movie_list.append(movie_name)
-    # print(movie_list)
     return movie_list
 
 def get_OpenFace_result() :
