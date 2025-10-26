@@ -5,8 +5,9 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from cmd import Cmd
-from modules import stats, get_AUdata, exec, PyOpenFace
+from modules import stats, get_AUdata, PyOpenFace, data_regiseter, db_engine, create_dataset
 from commands import parser_args
+from modules.models import Base
 
 class analyze_tools(Cmd) :
     intro = "'help'でコマンド一覧を表示"
@@ -20,15 +21,30 @@ class analyze_tools(Cmd) :
     
     def do_AUAnalyze(self, arg) :
         try :
-            exec.exec()
+            # Table 作成
+            Base.metadata.create_all(db_engine.engine)
+            
+            # 入力データをクラスに登録
+            all_data = data_regiseter.get_collected_data_list()
+    
+            # OpenFace.FeatureExtraction実行
+            PyOpenFace.get_OpenFace_result()
+
+            # main_table登録
+            data_regiseter.register(all_data)
+
+            # AU_table登録
+            data_regiseter.au_register(all_data)
         except Exception as e:
             print("Error:", e)
     
     def do_stats(self, arg) :
         try:
             arg_dict = parser_args.perse_args(arg)
-            print("DEBUG arg_dict:", arg_dict)
-            stats.get_stats(arg_dict["person"], arg_dict["date"], int(arg_dict["num"]), int(arg_dict["au"]))
+            is_all = "all" in arg_dict
+            if is_all :
+                arg_dict["au"] = 1
+            stats.get_stats(arg_dict["person"], arg_dict["date"], int(arg_dict["au"]), is_all)
         except Exception as e:
             print("ERROR:", e)
             
@@ -48,24 +64,24 @@ class analyze_tools(Cmd) :
             print("ERROR:", e)
             
     def do_peaks(self, arg) :
-        print("call do_peaks")
         try: 
             arg_dict = parser_args.perse_args(arg)
             is_all = "all" in arg_dict
             if is_all :
                 arg_dict["au"] = 1
-            print("call stats.get_data_from_property")
             data = stats.get_data_from_property(arg_dict["person"], arg_dict["date"])
             for i in data:
                 # 取得した全レコードの結果を表示
-                print("call get_AUdata.csv_to_dataframe")
                 df = get_AUdata.csv_to_dataframe(f"output/{i.movie_name}.csv")
-                print("call get_AUdata.show_AU_peak_graph")
                 get_AUdata.show_AU_peak_graph(df, int(arg_dict["au"]), is_all)
                 
         except Exception as e:
             print("ERROR:", e)
-            
+                    
+    def do_dataset(self, arg) :
+        arg_dict = parser_args.perse_args(arg)
+        create_dataset.create_dataset(arg_dict["s"], arg_dict["e"], arg_dict["person"])
+        
     def do_move(self, arg) :
         try :
             PyOpenFace.transfer_input_movies()

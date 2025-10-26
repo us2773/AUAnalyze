@@ -68,7 +68,6 @@ def separate_AU_trend_noise(df, plot_num) :
 
 def show_trend_noise_graph(df, au_num, all: bool) :
     plot_num = au_map.au_map_int.index(au_num) # AU番号で入力を受けつけインデックス番号に変換
-    print(f"plot_num: {plot_num}")
     
     AUR_start = df.columns.get_loc(" AU01_r")
     AUR_row = df.iloc[:, AUR_start + plot_num]
